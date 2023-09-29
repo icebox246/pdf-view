@@ -20,7 +20,7 @@
     "background_color": "#121212",
     "theme_color": "#121212",
     "display": "standalone",
-    "scope": "/pdf-view",
-    "start_url": "/pdf-view",
+    "scope": "/pdf-view/",
+    "start_url": "/pdf-view/",
     "description": "Simple PDF viewer based on pdfjs"
 }
