@@ -24,18 +24,30 @@ export class Viewer {
         this.offsetY = 0;
         this.velocityX = 0;
         this.velocityY = 0;
+        this.ticking = false;
     }
 
     /** @type{(url: string)} */
     async init(url) {
-        const res = await fetchCors(url);
-        console.log(res);
-        const data = await res.arrayBuffer();
+        let data;
+        if (localStorage.lastUrl == url && localStorage.cachedPdf) {
+            data = atob(localStorage.cachedPdf)
+        } else {
+            console.log('loading new pdf', url);
+            data = await (await fetchCors(url)).arrayBuffer();
+            localStorage.cachedPdf = btoa(convertUInt8ArrayToBinaryString(new Uint8Array(data)));
+        }
+
+        if(this.pdf) this.pdf.destroy()
+
         this.pdf = await pdfjs.getDocument({ data }).promise;
         this.page = await this.pdf.getPage(1);
 
         this.rerender = true;
-        await this.tick();
+        if (!this.ticking) {
+            this.ticking = true;
+            this.tick();
+        }
     }
 
     resizeCanvas() {
@@ -57,14 +69,17 @@ export class Viewer {
             offsetX: this.offsetX,
             offsetY: this.offsetY,
         });
+        this.drawingContexts[1].clearRect(0, 0, this.canvases[1].width, this.canvases[1].height);
         await this.page.render({
             canvasContext: this.drawingContexts[1],
             viewport: scaledViewport,
+            background: 'transparent',
         }).promise;
         this.swapBuffers();
     }
 
     swapBuffers() {
+        this.drawingContexts[0].clearRect(0, 0, this.canvases[0].width, this.canvases[0].height);
         this.drawingContexts[0].drawImage(this.canvases[1], 0, 0);
     }
 
@@ -125,12 +140,12 @@ export class Viewer {
     }
 
     slide() {
-        this.velocityX = lerp(this.velocityX, 0, 0.2);
-        this.velocityY = lerp(this.velocityX, 0, 0.2);
+        this.velocityX = lerp(this.velocityX, 0, 0.5);
+        this.velocityY = lerp(this.velocityX, 0, 0.5);
         if ((Math.abs(this.velocityX) > 1 || Math.abs(this.velocityY) > 1)) {
             if (this.lastPointerEvents.size == 0) {
-                this.offsetX += this.velocityX * 0.1;
-                this.offsetY += this.velocityY * 0.1;
+                this.offsetX += this.velocityX;
+                this.offsetY += this.velocityY;
             }
             this.rerender = true;
         }
@@ -155,4 +170,12 @@ function lerp(a, b, t) {
 async function fetchCors(resource, options) {
     const url = 'https://corsproxy.io/?' + encodeURIComponent(resource);
     return await fetch(url, options);
+}
+
+/** @type{(arr: Uint8Array)} */
+function convertUInt8ArrayToBinaryString(arr) {
+    let out = '';
+    for (let i = 0; i < arr.length; i++)
+        out += String.fromCharCode(arr[i]);
+    return out;
 }

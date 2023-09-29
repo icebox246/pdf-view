@@ -1,6 +1,6 @@
 import './style.css';
 import * as pdfjs from 'pdfjs-dist';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.js?url'
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.js?url'
 import { Viewer } from './viewer';
 import { Header } from './header';
 
@@ -14,3 +14,17 @@ const pdfCenter = document.getElementById("pdf-center");
 const viewer = new Viewer(pdfView);
 const header = new Header(pdfUrl, pdfReload, pdfCenter, viewer);
 header.init();
+
+// service worker
+(async () => {
+    const registerServiceWorker = async () => {
+        if ('serviceWorker' in navigator) {
+            try {
+                await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+            } catch (error) {
+                console.error('Service worker failed to register:', error);
+            }
+        }
+    };
+    await registerServiceWorker();
+})();

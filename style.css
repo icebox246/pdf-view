@@ -8,6 +8,7 @@
 body {
     overflow: hidden;
     touch-action: none;
+    background: #121212;
 }
 
 header {
@@ -15,13 +16,13 @@ header {
     position: absolute;
     width: 100%;
     z-index: 1;
-    background: black;
+    background: #121212;
 }
 
 header * {
     margin: 0.1em;
     padding: 1em;
-    background: black;
+    background: #121212;
     color: white;
     border: white 2px solid;
     border-radius: 2px;
@@ -36,5 +37,5 @@ header * {
 }
 
 .pdf-view {
-    filter: invert(100%) brightness(3) saturate(0.5) hue-rotate(180deg);
+    filter: invert(1) brightness(2) hue-rotate(180deg);
 }
