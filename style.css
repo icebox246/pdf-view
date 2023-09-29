@@ -1,0 +1,40 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+
+body {
+    overflow: hidden;
+    touch-action: none;
+}
+
+header {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    background: black;
+}
+
+header * {
+    margin: 0.1em;
+    padding: 1em;
+    background: black;
+    color: white;
+    border: white 2px solid;
+    border-radius: 2px;
+}
+
+#pdf-url {
+    flex: 1;
+}
+
+.pdf-container {
+    flex: 1;
+}
+
+.pdf-view {
+    filter: invert(100%) brightness(3) saturate(0.5) hue-rotate(180deg);
+}
