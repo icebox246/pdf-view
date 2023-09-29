@@ -20,7 +20,7 @@ header.init();
     const registerServiceWorker = async () => {
         if ('serviceWorker' in navigator) {
             try {
-                await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+                await navigator.serviceWorker.register('/pdf-view/sw.js', { scope: '/pdf-view/' });
             } catch (error) {
                 console.error('Service worker failed to register:', error);
             }
