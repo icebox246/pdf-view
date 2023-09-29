@@ -3,17 +3,17 @@
     "name": "PDF view",
     "icons": [
         {
-            "src": "ic_hi.svg",
+            "src": "/pdf-view/ic_hi.svg",
             "sizes": "512x512",
             "purpose": "maskable"
         },
         {
-            "src": "ic_mono.svg",
+            "src": "/pdf-view/ic_mono.svg",
             "sizes": "512x512",
             "purpose": "monochrome"
         },
         {
-            "src": "ic_hi.svg",
+            "src": "/pdf-view/ic_hi.svg",
             "sizes": "512x512 144x144"
         }
     ],
