@@ -15,9 +15,10 @@ export class Header {
                 localStorage.lastUrl = url;
             } catch (e) {
                 console.error(e);
+                alert("File could not be loaded :(");
             }
         })
-        
+
         this.centerButton.addEventListener('click', () => {
             this.viewer.offsetX = 0;
             this.viewer.offsetY = 0;

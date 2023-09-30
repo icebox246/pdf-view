@@ -30,15 +30,20 @@ export class Viewer {
     /** @type{(url: string)} */
     async init(url) {
         let data;
-        if (localStorage.lastUrl == url && localStorage.cachedPdf) {
+        if (!this.pdf && localStorage.lastUrl == url && localStorage.cachedPdf) {
             data = atob(localStorage.cachedPdf)
         } else {
             console.log('loading new pdf', url);
-            data = await (await fetchCors(url)).arrayBuffer();
+            const res = await fetchCors(url);
+            if(res.status != 200) {
+                throw `Failed to fetch ${url}`;
+            }
+            data = await res.arrayBuffer();
+            console.log(data);
             localStorage.cachedPdf = btoa(convertUInt8ArrayToBinaryString(new Uint8Array(data)));
         }
 
-        if(this.pdf) this.pdf.destroy()
+        if (this.pdf) this.pdf.destroy()
 
         this.pdf = await pdfjs.getDocument({ data }).promise;
         this.page = await this.pdf.getPage(1);
@@ -169,7 +174,7 @@ function lerp(a, b, t) {
 /** @type{(resource: URL, options?: RequestInit)} */
 async function fetchCors(resource, options) {
     const url = 'https://corsproxy.io/?' + encodeURIComponent(resource);
-    return await fetch(url, options);
+    return await fetch(url, { ...options, mode: 'cors' });
 }
 
 /** @type{(arr: Uint8Array)} */
